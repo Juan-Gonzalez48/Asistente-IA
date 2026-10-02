@@ -49,6 +49,7 @@ p{max-width:60ch}
 .d5{background:#c83cff;border-radius:48% 52% 50% 50%}
 .video{display:block;width:100%;max-width:960px;aspect-ratio:16/9;margin-top:40px;border-radius:16px;background:#000}
 .video:focus-visible{outline:3px solid var(--lime);outline-offset:3px}
+#bg{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none}
 /* qué son */
 .quote{border-left:3px solid var(--lime);padding-left:18px;font-weight:700;color:var(--lime);margin-top:28px;max-width:30ch}
 /* cómo funcionan */
@@ -72,7 +73,7 @@ p{max-width:60ch}
 .start .frog{display:block;width:min(100%,460px);height:auto;margin:0 auto 12px;-webkit-mask-image:radial-gradient(ellipse 75% 85% at 50% 50%,#000 62%,transparent 100%);mask-image:radial-gradient(ellipse 75% 85% at 50% 50%,#000 62%,transparent 100%)}
 .start h2{max-width:none;font-size:clamp(2.6rem,9vw,4.6rem)}
 .start h2 em{display:block;font-style:normal;color:#65a01d;font-size:1.25em}
-.start p{margin:28px auto 0;font-weight:700;font-size:1.1rem;max-width:26ch}
+.start p{margin:28px auto 0;font-weight:700;font-size:1.1rem;max-width:34ch}
 .start p span{color:#65a01d;font-weight:500}
 .btn.green{background:#5d921b;color:#fff;margin-top:32px}
 .btn.green:hover{background:#6aa81f}
@@ -89,6 +90,7 @@ footer{padding:32px 0 48px;color:var(--muted);font-size:.85rem;border-top:1px so
 </style>
 </head>
 <body>
+<canvas id="bg" aria-hidden="true"></canvas>
 <header class="hero">
   <div class="wrap">
     <p class="brand">OpenAI <b>Dots</b></p>
@@ -153,8 +155,8 @@ footer{padding:32px 0 48px;color:var(--muted);font-size:.85rem;border-top:1px so
 <section id="contacto" class="start">
   <div class="wrap">
     <img class="frog" alt="Dot verde con un globo de chat" src="Fotos/Fotosrana.jpg.jpg">
-    <h2>Los <em>Dots</em></h2>
-    <p>te entienden <span>hacen tus tareas</span> y te ayudan a avanzar en tus <span>proyectos</span>autonomamente  <span></span></p>
+    <h2>Empieza a usar <em>Dots</em></h2>
+    <p>Los Dots <span> te entienden</span> <span> hacen tus tareas</span> y te ayudan a avanzar en tus proyectos <span>autónomamente.</span></p>
     <a class="btn green" href="https://openai.com/es-419/index/introducing-dots/" target="_blank" rel="noopener noreferrer">Descubre cómo empezar →</a>
   </div>
 </section>
@@ -173,6 +175,31 @@ footer{padding:32px 0 48px;color:var(--muted);font-size:.85rem;border-top:1px so
     d.classList.remove('hop');void d.offsetWidth;d.classList.add('hop');
     say.textContent=d.getAttribute('data-msg');say.classList.add('show');
   });});
+})();
+</script>
+<script>
+(function(){
+  var c=document.getElementById('bg'),x=c.getContext('2d'),W,H,D=Math.min(window.devicePixelRatio||1,2),P=[],
+      reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches,
+      cols=['182,245,0','47,139,255','255,255,255','255,79,216'];
+  function size(){W=innerWidth;H=innerHeight;c.width=W*D;c.height=H*D;x.setTransform(D,0,0,D,0,0);
+    var n=Math.max(24,Math.min(80,Math.round(W*H/16000)));P=[];
+    for(var i=0;i<n;i++)P.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.35,vy:(Math.random()-.5)*.35,r:1.2+Math.random()*2.4,c:cols[i%4==0?0:i%4==1?1:i%4==2?2:(Math.random()<.2?3:2)],p:Math.random()*6.28});}
+  function draw(t){
+    x.clearRect(0,0,W,H);
+    for(var i=0;i<P.length;i++){var a=P[i];
+      if(!reduce){a.x+=a.vx;a.y+=a.vy;if(a.x<-10)a.x=W+10;if(a.x>W+10)a.x=-10;if(a.y<-10)a.y=H+10;if(a.y>H+10)a.y=-10;}
+      for(var j=i+1;j<P.length;j++){var b=P[j],dx=a.x-b.x,dy=a.y-b.y,d=dx*dx+dy*dy;
+        if(d<16900){x.strokeStyle='rgba(120,150,255,'+(.16*(1-d/16900)).toFixed(3)+')';x.lineWidth=1;x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,b.y);x.stroke();}}
+    }
+    for(var k=0;k<P.length;k++){var q=P[k],al=.45+.35*Math.sin((t||0)/1200+q.p);
+      x.fillStyle='rgba('+q.c+','+al.toFixed(2)+')';x.shadowColor='rgba('+q.c+',.8)';x.shadowBlur=8;
+      x.beginPath();x.arc(q.x,q.y,q.r,0,6.283);x.fill();}
+    x.shadowBlur=0;
+    if(!reduce)requestAnimationFrame(draw);
+  }
+  size();draw(0);
+  var rt;addEventListener('resize',function(){clearTimeout(rt);rt=setTimeout(function(){size();if(reduce)draw(0);},150);});
 })();
 </script>
 </body>
