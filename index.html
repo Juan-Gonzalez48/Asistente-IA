@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OpenAI Dots</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#050816; --panel:#0c1330; --line:#1c2757; --text:#f4f6ff; --muted:#a9b2d6; --lime:#b6f500;
+  --blue:#2f8bff; --pink:#ff4fd8; --yellow:#ffd21f; --green:#5fcf2a;
+  box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+  color-scheme:dark;
+}
+html{scroll-padding-top:env(safe-area-inset-top,0px);scroll-behavior:smooth}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--text);font-family:'Montserrat',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;line-height:1.55;
+  background-image:radial-gradient(circle at 85% 8%,rgba(182,245,0,.12) 0,transparent 22%),radial-gradient(circle at 10% 40%,rgba(47,139,255,.10) 0,transparent 30%)}
+.wrap{max-width:1040px;margin:0 auto;padding:0 24px}
+section{padding:72px 0}
+h1,h2{margin:0;font-weight:800;line-height:1.05;letter-spacing:-.02em}
+h1{font-size:clamp(2.6rem,8vw,5.2rem)}
+h2{font-size:clamp(2rem,5vw,3.2rem);max-width:14ch}
+.lime{color:var(--lime)}
+.sub{color:var(--lime);font-weight:700;font-size:1.15rem;margin:16px 0 0;max-width:34ch}
+p{max-width:60ch}
+.muted{color:var(--muted)}
+.btn{display:inline-block;background:var(--lime);color:#06100a;font-weight:700;text-decoration:none;padding:14px 28px;border-radius:999px;margin-top:28px}
+.btn:focus-visible{outline:3px solid #fff;outline-offset:3px}
+/* hero */
+.hero{padding-top:88px}
+.brand{font-weight:700;font-size:1.3rem;margin:0 0 8px}
+.brand b{color:var(--blue);font-weight:800;font-size:1.8rem;margin-left:6px}
+.dots{display:flex;gap:14px;flex-wrap:wrap;margin-top:40px;align-items:flex-end}
+.dot{width:84px;height:78px;position:relative;box-shadow:inset -8px -10px 18px rgba(0,0,0,.25);border:0;padding:30px 0 0;display:flex;justify-content:center;gap:24px;cursor:pointer;transition:transform .18s ease;-webkit-tap-highlight-color:transparent}
+.dot:hover{transform:translateY(-6px)}
+.dot:focus-visible{outline:3px solid #fff;outline-offset:4px}
+.dot.hop{animation:hop .55s ease}
+.eye{width:9px;height:9px;border-radius:50%;background:#10142a;transform:translate(var(--ex,0px),var(--ey,0px));pointer-events:none}
+@keyframes hop{0%{transform:none}35%{transform:translateY(-24px) scaleY(1.08)}65%{transform:translateY(0) scaleY(.92)}100%{transform:none}}
+.say{min-height:3em;margin:22px 0 0;display:inline-block;padding:10px 18px;border:2px solid var(--lime);border-radius:18px;font-weight:700;max-width:34ch;visibility:hidden}
+.say.show{visibility:visible}
+@media (prefers-reduced-motion:reduce){.dot,.dot.hop{transition:none;animation:none}.dot:hover{transform:none}}
+.d1{background:var(--green);border-radius:50% 50% 46% 46%}
+.d2{background:var(--blue);border-radius:55% 45% 50% 50%}
+.d3{padding-top:36px;background:var(--yellow);border-radius:50% 50% 12% 12%/70% 70% 12% 12%;width:96px;height:92px}
+.d4{background:var(--pink);border-radius:50%}
+.d5{background:#c83cff;border-radius:48% 52% 50% 50%}
+.video{display:block;width:100%;max-width:960px;aspect-ratio:16/9;margin-top:40px;border-radius:16px;background:#000}
+.video:focus-visible{outline:3px solid var(--lime);outline-offset:3px}
+/* qué son */
+.quote{border-left:3px solid var(--lime);padding-left:18px;font-weight:700;color:var(--lime);margin-top:28px;max-width:30ch}
+/* cómo funcionan */
+.steps{list-style:none;margin:44px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,1fr);gap:0}
+.steps li{padding:0 20px 0 0;position:relative;border-top:2px solid var(--line);padding-top:22px}
+.steps li::before{content:"";position:absolute;top:-6px;left:0;width:10px;height:10px;border-radius:50%;background:var(--lime)}
+.steps strong{display:block;font-size:1.1rem}
+.steps .n{color:var(--lime);font-weight:800;margin-right:6px}
+.steps span{color:var(--muted);display:block;margin-top:6px;font-size:.95rem}
+.note{display:flex;gap:12px;align-items:center;margin-top:44px;color:var(--muted)}
+.note i{flex:none;width:30px;height:30px;border:2px solid var(--lime);border-radius:50%;display:grid;place-items:center;color:var(--lime);font-style:normal;font-weight:700}
+/* tareas */
+.tasks{list-style:none;margin:44px 0 0;padding:0;display:grid;grid-template-columns:repeat(2,1fr);gap:28px 56px}
+.tasks li{display:flex;gap:16px;align-items:flex-start;font-size:1.05rem}
+.tasks b{color:var(--lime);font-weight:800;font-size:1.1rem;flex:none;min-width:2ch}
+.fine{margin-top:56px;font-size:.85rem;color:var(--muted)}
+.mascot{position:absolute;right:24px;top:56px;width:clamp(96px,16vw,150px);height:auto}
+#tareas .wrap,#como-funcionan .wrap{position:relative}
+@media (max-width:620px){.mascot{position:static;display:block;margin:0 0 20px}}
+.start{text-align:center;padding:72px 0 96px}
+.start .frog{display:block;width:min(100%,460px);height:auto;margin:0 auto 12px;-webkit-mask-image:radial-gradient(ellipse 75% 85% at 50% 50%,#000 62%,transparent 100%);mask-image:radial-gradient(ellipse 75% 85% at 50% 50%,#000 62%,transparent 100%)}
+.start h2{max-width:none;font-size:clamp(2.6rem,9vw,4.6rem)}
+.start h2 em{display:block;font-style:normal;color:#65a01d;font-size:1.25em}
+.start p{margin:28px auto 0;font-weight:700;font-size:1.1rem;max-width:26ch}
+.start p span{color:#65a01d;font-weight:500}
+.btn.green{background:#5d921b;color:#fff;margin-top:32px}
+.btn.green:hover{background:#6aa81f}
+/* cta */
+.cta{text-align:left}
+footer{padding:32px 0 48px;color:var(--muted);font-size:.85rem;border-top:1px solid var(--line)}
+@media (max-width:820px){
+  .steps{grid-template-columns:1fr 1fr;gap:36px 0}
+  .tasks{grid-template-columns:1fr}
+  section{padding:56px 0}
+}
+@media (max-width:480px){.steps{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<header class="hero">
+  <div class="wrap">
+    <p class="brand">OpenAI <b>Dots</b></p>
+    <h1>Asistentes de IA que entienden el contexto y te ayudan a avanzar</h1>
+    <video class="video" controls playsinline preload="metadata" aria-label="Video de presentación de los Dots"><source src="assets/video-dots.mp4" type="video/mp4"></video>
+    <div class="dots" role="group" aria-label="Dots de colores"><button type="button" class="dot d1" data-msg="Organizo información y convierto tus ideas en planes" aria-label="Dot verde"><i class="eye"></i><i class="eye"></i></button><button type="button" class="dot d2" data-msg="Redacto, resumo y mejoro tus textos" aria-label="Dot azul"><i class="eye"></i><i class="eye"></i></button><button type="button" class="dot d3" data-msg="Analizo tus archivos y extraigo lo más importante" aria-label="Dot amarillo"><i class="eye"></i><i class="eye"></i></button><button type="button" class="dot d4" data-msg="Investigo y comparo información" aria-label="Dot rosa"><i class="eye"></i><i class="eye"></i></button><button type="button" class="dot d5" data-msg="Creo contenidos y presentaciones, y doy seguimiento a tus tareas" aria-label="Dot morado"><i class="eye"></i><i class="eye"></i></button></div>
+    <p class="say" id="say" role="status" aria-live="polite"></p>
+    <br>
+    <a class="btn" href="#contacto">Conoce los Dots</a>
+  </div>
+</header>
+
+<main>
+<section id="que-son">
+  <div class="wrap">
+    <h2>¿Qué son los Dots?</h2>
+    <p style="margin-top:28px;font-size:1.15rem">La nueva generación de asistentes de IA de OpenAI.</p>
+    <p class="muted">Agentes que mantienen el contexto y avanzan hacia tus objetivos.</p>
+    <div class="quote">«Los dots son una extensión de ti»</div>
+  </div>
+</section>
+
+<section id="como-funcionan">
+  <div class="wrap">
+    <img class="mascot" alt="Dot amarillo con lentes y computador" src="assets/mascota-amarilla.png">
+    <h2>¿Cómo funcionan los Dots?</h2>
+    <p class="sub">Una forma visual de entender el flujo de trabajo de la IA</p>
+    <ol class="steps">
+      <li><strong><span class="n" style="display:inline;margin:0;color:var(--lime)">1.</span> Tu solicitud</strong><span>Describes lo que necesitas.</span></li>
+      <li><strong><span class="n" style="display:inline;margin:0;color:var(--lime)">2.</span> Contexto</strong><span>Interpreta la conversación y las instrucciones disponibles.</span></li>
+      <li><strong><span class="n" style="display:inline;margin:0;color:var(--lime)">3.</span> Acción</strong><span>Genera texto, analiza archivos o usa herramientas habilitadas.</span></li>
+      <li><strong><span class="n" style="display:inline;margin:0;color:var(--lime)">4.</span> Resultado</strong><span>Entrega una respuesta que puedes revisar.</span></li>
+    </ol>
+    <div class="note"><i>i</i><span>«Los dots trabajan donde tú trabajas»</span></div>
+  </div>
+</section>
+
+<section id="tareas">
+  <div class="wrap">
+    <img class="mascot" alt="Dot azul con boina y lupa" src="assets/mascota-azul.png">
+    <h2 style="max-width:18ch">¿Qué tareas puede realizar un Dot?</h2>
+    <p class="sub">Un asistente que te ayuda a avanzar hacia tus objetivos</p>
+    <ul class="tasks">
+      <li><b>01</b>Organizar información y convertir ideas en planes</li>
+      <li><b>04</b>Investigar y comparar información</li>
+      <li><b>02</b>Redactar, resumir y mejorar textos</li>
+      <li><b>05</b>Crear contenidos, propuestas y presentaciones</li>
+      <li><b>03</b>Analizar archivos y extraer lo más importante</li>
+      <li><b>06</b>Dar seguimiento a tareas y próximos pasos</li>
+    </ul>
+    <p class="fine">Las capacidades dependen de las instrucciones, el contexto y las herramientas disponibles.</p>
+  </div>
+</section>
+
+<section class="cta">
+  <div class="wrap">
+    <h2 style="max-width:16ch">Siempre tienes el control</h2>
+  </div>
+</section>
+
+<section id="contacto" class="start">
+  <div class="wrap">
+    <img class="frog" alt="Dot verde con un globo de chat" src="assets/rana.jpg">
+    <h2>Empieza a usar <em>Dots</em></h2>
+    <p>Dots <span>entienden el contexto</span> y te ayudan a <span>avanzar</span> hacia <span>tus objetivos.</span></p>
+    <a class="btn green" href="https://openai.com/es-419/index/introducing-dots/" target="_blank" rel="noopener noreferrer">Descubre cómo empezar →</a>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap">OpenAI Dots</div></footer>
+<script>
+(function(){
+  var dots=[].slice.call(document.querySelectorAll('.dot')),say=document.getElementById('say'),raf=0,px=0,py=0;
+  function look(){raf=0;dots.forEach(function(d){var r=d.getBoundingClientRect(),dx=px-(r.left+r.width/2),dy=py-(r.top+r.height/2),m=Math.hypot(dx,dy)||1,k=Math.min(1,m/160);d.style.setProperty('--ex',(dx/m*3.5*k).toFixed(1)+'px');d.style.setProperty('--ey',(dy/m*3.5*k).toFixed(1)+'px');});}
+  document.addEventListener('pointermove',function(e){px=e.clientX;py=e.clientY;if(!raf)raf=requestAnimationFrame(look);});
+  dots.forEach(function(d){d.addEventListener('click',function(){
+    d.classList.remove('hop');void d.offsetWidth;d.classList.add('hop');
+    say.textContent=d.getAttribute('data-msg');say.classList.add('show');
+  });});
+})();
+</script>
+</body>
+</html>
